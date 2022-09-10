@@ -19,6 +19,11 @@ public class UserController {
         // 인가코드 받았으니 이를 가지고 카카오서버에게 액세스 토큰 발급 요청
         AccessTokenRes accessTokenRes = userService.getAccessToken(code);
 
+        // 액세스 토큰 발급 완료
+
+        // 발급 받은 accessToken 으로 카카오 서버에 회원정보 요청 후 DB에 저장
+        userService.saveUser(accessTokenRes.getAccess_token());
+
         return accessTokenRes;
     }
 }
