@@ -10,6 +10,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -22,6 +26,7 @@ import java.util.Date;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final AuthenticationManager authenticationManager;
 
     // 환경 변수
     @Value("${spring.jpa.security.oauth2.client.registration.kakao.client-id}")
@@ -87,7 +92,13 @@ public class UserService {
             userRepository.save(user);
         }
 
-        return createToken(user);
+        String jwtToken = createToken(user);
+
+        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), client_secret));
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+        return jwtToken;
     }
 
     public KakaoProfile findProfile(String token) {
