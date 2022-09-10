@@ -31,6 +31,9 @@ out/
 application.yml
 **/resources/application.yml
 
+### properties ###
+JwtProperties.java
+
 ### NetBeans ###
 /nbproject/private/
 /nbbuild/

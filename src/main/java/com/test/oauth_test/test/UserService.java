@@ -1,5 +1,7 @@
 package com.test.oauth_test.test;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -20,13 +24,13 @@ public class UserService {
     private final UserRepository userRepository;
 
     // 환경 변수
-    @Value("${kakao.client-id}")
+    @Value("${spring.jpa.security.oauth2.client.registration.kakao.client-id}")
     String client_id;
 
-    @Value("${kakao.secret}")
+    @Value("${spring.jpa.security.oauth2.client.registration.kakao.client-secret}")
     String client_secret;
 
-    @Value("${kakao.redirect-uri}")
+    @Value("${spring.jpa.security.oauth2.client.registration.kakao.redirect-uri}")
     String redirect_uri;
 
     public AccessTokenRes getAccessToken(String code) {
@@ -65,7 +69,7 @@ public class UserService {
     }
 
     // accessToken 으로 회원정보 요청 후 DB에 저장
-    public void saveUser(String token) {
+    public String saveUser(String token) {
 
         // 카카오 서버로부터 회원정보 받아오기
         KakaoProfile profile = findProfile(token);
@@ -82,6 +86,8 @@ public class UserService {
 
             userRepository.save(user);
         }
+
+        return createToken(user);
     }
 
     public KakaoProfile findProfile(String token) {
@@ -111,5 +117,19 @@ public class UserService {
         }
 
         return kakaoProfile;
+    }
+
+    public String createToken(User user) {
+
+        String jwtToken = JWT.create()
+                .withSubject(user.getEmail())
+                .withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME))
+
+                .withClaim("id", user.getId())
+                .withClaim("email", user.getEmail())
+
+                .sign(Algorithm.HMAC512(JwtProperties.SECRET));
+
+        return jwtToken;
     }
 }
