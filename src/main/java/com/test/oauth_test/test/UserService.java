@@ -5,6 +5,7 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -26,7 +27,6 @@ import java.util.Date;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final AuthenticationManager authenticationManager;
 
     // 환경 변수
     @Value("${spring.jpa.security.oauth2.client.registration.kakao.client-id}")
@@ -92,13 +92,7 @@ public class UserService {
             userRepository.save(user);
         }
 
-        String jwtToken = createToken(user);
-
-        Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), client_secret));
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-
-        return jwtToken;
+        return createToken(user);
     }
 
     public KakaoProfile findProfile(String token) {
