@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
 
 @Configuration
@@ -34,7 +35,7 @@ public class SecurityConfig {
                 .logoutSuccessUrl("/")
                 .and()
                 .authorizeRequests()
-                .antMatchers("/**")
+                .antMatchers("/auth/**")
                 .authenticated()
                 .anyRequest().permitAll()
                 .and()
@@ -50,7 +51,7 @@ public class SecurityConfig {
             AuthenticationManager authenticationManager = http.getSharedObject(AuthenticationManager.class);
             http
                     .addFilter(corsFilter)
-                    .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository));
+                    .addFilterBefore(new JwtAuthorizationFilter(authenticationManager, userRepository), UsernamePasswordAuthenticationFilter.class);
         }
     }
 }

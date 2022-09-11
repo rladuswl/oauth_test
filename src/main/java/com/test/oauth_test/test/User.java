@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -20,9 +21,10 @@ public class User {
     private Long id;
 
     @Column(name = "kakao_username")
-    private String kakaoUsername; // kakao Nickname
+    private String kakao_username; // kakao Nickname
 
     @Column(name = "username")
+    @Nullable
     private String username; // 서비스 내 username
 
 //    @Column(name = "password")
@@ -32,6 +34,7 @@ public class User {
     private String email; // kakao Email
 
     @Column(name = "profile_img")
+    @Nullable
     private String profileImg; // profileImg
 
     private String role;
@@ -44,7 +47,7 @@ public class User {
 
     @Builder
     public User(String kakao_username, String username, String email, String profileImg, String role) {
-        this.kakaoUsername = kakao_username;
+        this.kakao_username = kakao_username;
         this.username = username;
         this.email = email;
         this.profileImg = profileImg;

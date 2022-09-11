@@ -16,6 +16,8 @@ public class UserController {
 
     // 프론트 -> 서버 로 인가코드 전송하면 받아오는 URI
     // 임시 URI 경로
+    // https://kauth.kakao.com/oauth/authorize?client_id=b9f6eaeb47ed2f08476461345671880c&redirect_uri=http://52.78.4.217:8080/api/authorization_code&response_type=code
+    // https://kauth.kakao.com/oauth/authorize?client_id=b9f6eaeb47ed2f08476461345671880c&redirect_uri=http://localhost:8080/api/authorization_code&response_type=code
     @GetMapping("/api/authorization_code")
     public ResponseEntity getLogin(@RequestParam("code") String code) {
 
@@ -27,16 +29,11 @@ public class UserController {
         // 발급 받은 accessToken 으로 카카오 서버에 회원정보 요청 후 DB에 저장
         String jwtToken = userService.saveUser(accessTokenRes.getAccess_token());
 
+        System.out.println("jwtToken : Bearer " + jwtToken);
+
         HttpHeaders headers = new HttpHeaders();
         headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
 
         return ResponseEntity.ok().headers(headers).body("success");
-    }
-
-    @GetMapping("/test")
-    public String test(Authentication authentication) {
-        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
-        User user = principalDetails.getUser();
-        return user.getUsername() + user.getEmail();
     }
 }

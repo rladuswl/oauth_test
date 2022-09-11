@@ -31,6 +31,12 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.auth0/java-jwt
     implementation group: 'com.auth0', name: 'java-jwt', version: '3.19.0'
+
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpcore
+    implementation group: 'org.apache.httpcomponents', name: 'httpcore', version: '4.4.15'
 }
 
 tasks.named('test') {
