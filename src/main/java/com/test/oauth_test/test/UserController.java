@@ -64,4 +64,11 @@ public class UserController {
         headers.add(JwtProperties.HEADER_STRING, "토큰토큰토큰");
         return ResponseEntity.ok().headers(headers).body(name + " hello!!!!!!!!!!!!");
     }
+
+    @GetMapping("/auth/test")
+    public String authTest(Authentication authentication) {
+
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        return principalDetails.getUser().getUsername() + principalDetails.getUser().getEmail();
+    }
 }
