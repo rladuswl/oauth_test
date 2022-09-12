@@ -29,6 +29,21 @@ public class UserController {
         // 발급 받은 accessToken 으로 카카오 서버에 회원정보 요청 후 DB에 저장
         String jwtToken = userService.saveUser(accessTokenRes.getAccess_token());
 
+        System.out.println("access_token : " + accessTokenRes.getAccess_token());
+        System.out.println("jwtToken : Bearer " + jwtToken);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtProperties.HEADER_STRING, JwtProperties.TOKEN_PREFIX + jwtToken);
+
+        return ResponseEntity.ok().headers(headers).body("success");
+    }
+
+    // 인가코드 과정 없이 바로 액세스코드 받아오기
+    @GetMapping("/api/access_token")
+    public ResponseEntity getToken(@RequestParam("token") String token) {
+
+        String jwtToken = userService.saveUser(token);
+
         System.out.println("jwtToken : Bearer " + jwtToken);
 
         HttpHeaders headers = new HttpHeaders();
