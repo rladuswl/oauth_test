@@ -38,6 +38,11 @@ public class UserController {
         return ResponseEntity.ok().headers(headers).body("success");
     }
 
+    @GetMapping("/api/code")
+    public ResponseEntity code(@RequestParam("code") String code) {
+        return ResponseEntity.ok().body("success");
+    }
+
     // 인가코드 과정 없이 바로 액세스코드 받아오기
     @GetMapping("/api/access_token")
     public ResponseEntity getToken(@RequestParam("token") String token) {
