@@ -36,4 +36,12 @@ public class UserController {
 
         return ResponseEntity.ok().headers(headers).body("success");
     }
+
+    @GetMapping("/test")
+    public ResponseEntity test(@RequestParam("name") String name) {
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(JwtProperties.HEADER_STRING, "토큰토큰토큰");
+        return ResponseEntity.ok().headers(headers).body(name + " hello!!!!!!!!!!!!");
+    }
 }
